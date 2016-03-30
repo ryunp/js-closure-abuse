@@ -24,4 +24,4 @@ Source: [Synth.js](https://github.com/garvank/synth-js)
 
 
 So I began investigating. Thus, the result is inside the main.js file. Complete with thought process trailing the working code.
-[JSFiddle](https://jsfiddle.net/ryunp/8nyq969t/1/)
+Here is a working demo: [JSFiddle](https://jsfiddle.net/ryunp/8nyq969t/1/)
