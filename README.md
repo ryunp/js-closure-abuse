@@ -29,5 +29,6 @@ So I began investigating. I ended up simplifying down to:
        setTimeout( this.show.bind(this, el, queue[i]), delay * i );
 
 
-Main.js has the investigation diary located after code.
-Here is a working demo: [JSFiddle](https://jsfiddle.net/ryunp/8nyq969t/1/)
+Main.js has the investigation diary (thought process) located after code.
+
+Also, a working demo: [JSFiddle](https://jsfiddle.net/ryunp/8nyq969t/1/)
