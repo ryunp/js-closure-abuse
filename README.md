@@ -23,5 +23,5 @@ This piece of code really tripped me up:
 Source: [Synth.js](https://github.com/garvank/synth-js)
 
 
-So I began investigating. Thus, the result is inside the main.js file. Complete with thought process trailing the working code.
+So I began investigating. Thus, the result is inside the main.js file. Complete with the investigation diary located after code.
 Here is a working demo: [JSFiddle](https://jsfiddle.net/ryunp/8nyq969t/1/)
