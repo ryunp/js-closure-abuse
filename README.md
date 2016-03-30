@@ -2,7 +2,8 @@
 An exploration into closures, and Object.bind()
 
 
-### Original code piece
+
+This piece of code really tripped me up:
 
     Synth.prototype.sequence = function(queue, bpm, loops){
 
@@ -19,4 +20,8 @@ An exploration into closures, and Object.bind()
       }
     };
 
-[a](Source)
+Source: [Synth.js](https://github.com/garvank/synth-js)
+
+
+So I began investigating. Thus, the result is inside the main.js file. Complete with thought process trailing the working code.
+[JSFiddle](https://jsfiddle.net/ryunp/8nyq969t/1/)
