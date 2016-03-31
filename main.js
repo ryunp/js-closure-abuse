@@ -66,11 +66,19 @@ t.run_cranked(crankedEl, ["This is run_cranked!", "11/10"], 4000);
 
 /* 
  * Diary
+ *
+ * First and foermost understand the lexicaly scoped function execution context
+ * http://davidshariff.com/blog/javascript-scope-chain-and-closures/
+ *
+ * Common mistake is to refernce scopes unknowingly which can cause memory
+ * leaks. Probably the most misunderstood topic of JS, is execution context
+ * chaining.
+ * 
  */
 
 /** Subject A - Original Procedure AKA "Closure Abuse"
  * If you don't immediately understand it, good; it took me a while to 
- * figure out exactly what was going on.
+ * figure out exactly what was going on
  *
  * for(i=0; i < queue.length; i++){
  *     ((function(offset){
@@ -80,45 +88,22 @@ t.run_cranked(crankedEl, ["This is run_cranked!", "11/10"], 4000);
  *     }).bind(this))(i);
  *   }
  * }
- *
  * 
- * ++ Statement 1 ++
- * for(i=0; i < queue.length; i++){ X }
- *
- * Looping N times. That includes creating objects each time... (derp)
+ * ++ Loop Steps ++
+ * 1) Create anon function that sets a timeout
+ * 2) Bind preserves context, and is immediately called with an argument
+ * 3) Create Anon function that calls context method with 1's param
+ * 4) Bind preserves context, returning new functor
+ * 5) 4's functor is sent to the Event Queue with predefined context
  * 
- *
- * 
- * ++ Statement N.1 ++
- * ((function(offset){ Y }).bind(this))(i);
- * 
- * Create an anonymous function object, bind context, and then call it 
- * passing current index value of the for loop. This is really only just 
- * encapsulating a variable into a new execution environment. We'll call 
- * this specimen F1.
- *
- * (obj) <-- [F1]
- *          [run]
- * Stack: [ancestors]
- * 
- *
- * 
- * ++ Statement N.2 ++
- * setTimeout((function(){ Z }).bind(this), offset * calculated_bpm)
- * 
- * Now we are running in F1's stack frame context. We call setTimeout
- * by creating another function object, specimen F2, with it's context bound
- * to F1's context, and giving it a delay from previously bound to F1.
- *
- *         ,------------<---------.
- * (obj) <-- [F1] ---(F2)-.        \
- *          [run]          \       [F2]
- * Stack: [ancestors]       '--> |Event Queue|
+ * Scope chain: 4 <- 3 (Method Call) -> 2 -> 1
+ * All scopes are referencing each other in some way
  */
 
 
+
 /** Subject B - Not So Closure
- * That didn't seem efficient. I reduced binding usage down to one.
+ * That didn't seem efficient. I reduced binding usage down to one extra scope
  * 
  * for(i=0; i < queue.length; i++) {
  *   setTimeout((function(item) {
@@ -126,51 +111,29 @@ t.run_cranked(crankedEl, ["This is run_cranked!", "11/10"], 4000);
  *   }).bind(this, queue[i]), delay * i);
  * }
  *
- * 
- * ++ Statement 1 ++
- * for(i=0; i < queue.length; i++){ X }
+ * ++ Loop Steps ++
+ * 1) Create anon function that calls a context method
+ * 2) Bind preserves context and arguments by returning new functor
+ * 3) 2's functor is sent to the Event Queue with predefined context and param
  *
- *
- * 
- * ++ Statement N.1 ++
- * setTimeout((function(item) { Y }).bind(this, queue[i]), delay * i);
- * 
- * Create anonymous function binding the context and argument as parameters.
- * This function object gets passed as the callback. Now only one function 
- * object is created; instead of an outer closure to preserve the index it 
- * is passed as an argument of the bind() function. Much clearer when
- * binding is happening and less cruft.
- * 
+ * Scope chain: 2 <- 1 (Method Call)
  */
 
 
+
 /** Subject C - Nosure® (more like Singlesure®)
- * "What excatly are we trying to preserve?"... All we really want is to
- * create a callback function while preserving context and arguments.
- * "But, wait, that IS what bind() does..." ...
+ * The reduction could go even further, especially clear without the convolution
  *
  * for(i=0; i < queue.length; i++)
  *   setTimeout( this.show.bind(this, el, queue[i]), delay * i );
  *
- * 
- * ++ Statement 1 ++
- * for(i=0; i < queue.length; i++){ X }
- *
- *
- * 
- * ++ Statement N.1 ++
+ * ++ Loop Steps ++
  * setTimeout( this.show.bind(this, queue[i]), delay * i );
  *
- * Now there is no extra objects created, just the one from bind's return,
- * bind does it's magic:
- * 
- * 1) Create a function object with 'this.show' as it's target
- * 2) Bind it's this' to current this
- * 3) Set arguments to be sent with the call
+ * 1) Bind preserves context and arguments by returning new functor
+ * 2) 1's functor is sent to the Event Queue with predefined context and param
  *
- * And when setTimeout's callback statement gets fired, the function 
- * object's __Call__ function splats the arguments into the actual call.
- * 
- * The new function object (bind()'s return) is all packed up and passed to 
- * the Timeout function; ready for calling. Avoids hysterical closure abuse.
+ * Scope Chain: 1 (Method Call)
+ *
+ * Shnazzy
  */
