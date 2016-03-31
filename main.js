@@ -83,7 +83,7 @@ t.run_cranked(crankedEl, ["This is run_cranked!", "11/10"], 4000);
  * for(i=0; i < queue.length; i++){
  *     ((function(offset){
  *       setTimeout((function(){
- *         this.play(el, queue[offset]);
+ *         this.show(el, queue[offset]);
  *       }).bind(this), offset * calculated_bpm)
  *     }).bind(this))(i);
  *   }
