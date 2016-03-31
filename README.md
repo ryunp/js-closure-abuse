@@ -3,7 +3,7 @@ An exploration into closures, and Object.bind()
 
 
 
-This piece of code really tripped me up:
+The code inside the for loop really tripped me up:
 
     Synth.prototype.sequence = function(queue, bpm, loops){
 
