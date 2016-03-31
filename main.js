@@ -59,9 +59,9 @@ Test.prototype.run_cranked = function(el, queue, ms) {
 
 var t = new Test();
 
-var originalEl = document.querySelector("#original");
-var mehEl = document.querySelector("#meh");
-var crankedEl = document.querySelector("#cranked");
+var originalEl = document.querySelector("#original"),
+	mehEl = document.querySelector("#meh"),
+	crankedEl = document.querySelector("#cranked");
 
 t.run_original(originalEl, ["This is run_original!", "1/10"], 2000);
 t.run_meh(mehEl, ["This is run_meh!", "4/10"], 3000);
