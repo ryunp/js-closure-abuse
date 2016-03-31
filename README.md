@@ -28,7 +28,6 @@ So I began investigating. I ended up simplifying down to:
     for(i=0; i < queue.length; i++)
        setTimeout( this.show.bind(this, el, queue[i]), delay * i );
 
-
-Main.js has the investigation diary (thought process) located after code.
+Replaced play() with show() for my example. Main.js has the investigation diary (thought process) located after code.
 
 Also, a working demo: [JSFiddle](https://jsfiddle.net/ryunp/8nyq969t/1/)
