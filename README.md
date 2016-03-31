@@ -30,4 +30,4 @@ So I began investigating. I ended up simplifying down to:
 
 Replaced play() with show() for my example. Main.js has the investigation diary (thought process) located after code.
 
-Also, a working demo: [JSFiddle](https://jsfiddle.net/ryunp/8nyq969t/1/)
+Also, a working demo: [JSFiddle](https://jsfiddle.net/ryunp/8nyq969t/)
