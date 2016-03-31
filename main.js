@@ -1,3 +1,7 @@
+/* Ryan Paul - 03/31/16
+ * Scope chains, closures, and bindign
+ */
+
 
 var Test = function() {
 	this.el = document.body;
@@ -16,11 +20,11 @@ Test.prototype.run_original = function(el, queue, ms){
 
 	var delay = ms;    
 
-	for(i=0; i < queue.length; i++){
+	for (i=0; i < queue.length; i++) {
 		((function(offset){
 			setTimeout((function(){
 				this.show(el, queue[offset]);
-			}).bind(this), offset * delay)
+			}).bind(this), offset * delay);
 		}).bind(this))(i);
 	}
 };
@@ -31,7 +35,7 @@ Test.prototype.run_meh = function(el, queue, ms) {
 
 	var delay = ms;
 
-	for(i=0; i < queue.length; i++) {
+	for (i=0; i < queue.length; i++) {
 		setTimeout((function(item) {
 			this.show(el, item);
 		}).bind(this, queue[i]), delay * i);
@@ -44,7 +48,7 @@ Test.prototype.run_cranked = function(el, queue, ms) {
 
 	var delay = ms;
 
-	for(i=0; i < queue.length; i++)
+	for (i=0; i < queue.length; i++)
 		setTimeout( this.show.bind(this, el, queue[i]), delay * i );
 };
 
@@ -80,7 +84,7 @@ t.run_cranked(crankedEl, ["This is run_cranked!", "11/10"], 4000);
  * If you don't immediately understand it, good; it took me a while to 
  * figure out exactly what was going on
  *
- * for(i=0; i < queue.length; i++){
+ * for (i=0; i < queue.length; i++) {
  *     ((function(offset){
  *       setTimeout((function(){
  *         this.show(el, queue[offset]);
@@ -105,7 +109,7 @@ t.run_cranked(crankedEl, ["This is run_cranked!", "11/10"], 4000);
 /** Subject B - Not So Closure
  * That didn't seem efficient. I reduced binding usage down to one extra scope
  * 
- * for(i=0; i < queue.length; i++) {
+ * for (i=0; i < queue.length; i++) {
  *   setTimeout((function(item) {
  *     this.show(el, item);
  *   }).bind(this, queue[i]), delay * i);
@@ -124,7 +128,7 @@ t.run_cranked(crankedEl, ["This is run_cranked!", "11/10"], 4000);
 /** Subject C - Nosure® (more like Singlesure®)
  * The reduction could go even further, especially clear without the convolution
  *
- * for(i=0; i < queue.length; i++)
+ * for (i=0; i < queue.length; i++)
  *   setTimeout( this.show.bind(this, el, queue[i]), delay * i );
  *
  * ++ Loop Steps ++
