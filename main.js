@@ -100,7 +100,7 @@ t.run_cranked(crankedEl, ["This is run_cranked!", "11/10"], 4000);
  * 4) Bind preserves context, returning new another functor refferemcomg 3's scope
  * setTimeout: 4's functor is sent to the Event Queue with predefined context
  * 
- * run_meh() call stack:
+ * run_original() call stack:
  * (anonymous function)	@	main.js:25 // setTimeout((function(){ }).bind(this), offset * delay);
  * Test.run_original	@	main.js:28 // ((function(offset){ }).bind(this))(i);
  * (anonymous function)	@	main.js:66 // t.run_original( ... );
