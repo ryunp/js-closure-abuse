@@ -1,5 +1,5 @@
 # js-closure-abuse
-An exploration into closures, execution context, and Object.bind()
+An exploration into closures, execution scope, context, and Object.bind()
 
 
 
