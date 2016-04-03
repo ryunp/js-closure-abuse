@@ -48,9 +48,10 @@ Screenshots of the data from Dev Tools panel are linked for visuals/reference.
     0.2ms 100.0% Test.show             @ main.js:14 // el.insertAdjacentHTML("beforeend", html);
     0.2ms 100.0% (anonymous function)  @ main.js:26 // this.show(el, queue[offset]);
 
-As you can see, two extra closures are created and held in memory.  
-First is in the method call wrapping the setTimeout function (top of *Method Calls Stack*) which is created and called immediately (bound IIFE).  
-Second is created in the setTimeout argument (bottom of *Callback Stack*)
+As you can see, two extra closures are created and held in memory.
+
+1. Wrapping the setTimeout function (top of *Method Calls Stack*) which is created and called immediately (bound IIFE).
+2. Created in the setTimeout argument (bottom of *Callback Stack*) (bound IIFE)
 
 ####run_meh()
 #####[Method Calls Stack](img/method_invocation_callstacks.jpg)
