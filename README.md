@@ -38,7 +38,7 @@ Screenshots of the data from Dev Tools panel are linked for visuals/reference.
 2. Callback Stack is invocation of their respective callbacks.
 
 
-####run_original()
+####[run_original()](js/main.js#L19-L30)
 #####[Method Calls Stack](img/method_invocation_callstacks.jpg)
     (anonymous function)  @ main.js:25 // setTimeout((function(){ this.show... }).bind(this), offset * delay);
     Test.run_original     @ main.js:28 // ((function(offset){ setTimeout... }).bind(this))(i);
@@ -53,7 +53,7 @@ As you can see, two extra closures are created and held in memory.
 1. Wrapping the setTimeout function (top of *Method Calls Stack*) which is created and called immediately (bound IIFE).
 2. Created in the setTimeout argument (bottom of *Callback Stack*) (bound functor)
 
-####run_meh()
+####[run_meh()](js/main.js#L34-L43)
 #####[Method Calls Stack](img/method_invocation_callstacks.jpg)
     Test.run_meh         @ main.js:39 // setTimeout((function(item) { this.show... }).bind(this, queue[i]), delay * i);
     (anonymous function) @ main.js:67 // t.run_meh( ... );
@@ -64,7 +64,7 @@ As you can see, two extra closures are created and held in memory.
 
 The wrapping closure in the *Method Calls Stack* is removed. But we still have the wrapping closure in the setTimeout argument (bottom of *Callback Stack*).
 
-####run_cranked()
+####[run_cranked()](js/main.js#L47-L53)
 #####[Method Calls Stack](img/method_invocation_callstacks.jpg)
     Test.run_cranked      @ main.js:52 // setTimeout((function(item) { ... }).bind(this, queue[i]), delay * i);
     (anonymous function)  @ main.js:68 // t.run_cranked( ... );
