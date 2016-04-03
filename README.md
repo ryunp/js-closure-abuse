@@ -53,7 +53,7 @@ Method call stack refers to this image, individual setTimeout callback invocatio
 As you can see, two extra closures are created and held in memory.  
 First is in the method call wrapping the setTimeout function (top of method stack) which is created and called immediately (bound IIFE).  
 Second is created in the setTimeout argument (bottom of callback stack). No bueno.  
-**?** Not sure why this is line 14 instead of 11, like the others. ¯\_(ツ)_/¯
+**?** Not sure why this is line 14 instead of 11, like the others. ¯\\_(ツ)_/¯
 
 ####run_meh()
 #####Method call stack
