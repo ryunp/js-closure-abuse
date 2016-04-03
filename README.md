@@ -46,7 +46,7 @@ Here is the three method invocations which set timeouts. Screenshots of the data
 
 As you can see, two extra closures are created and held in memory.  
 First is in the method call wrapping the setTimeout function (top of *Method Call Stack*) which is created and called immediately (bound IIFE).  
-Second is created in the setTimeout argument (bottom of *Callback Stack*). No bueno.  
+Second is created in the setTimeout argument (bottom of *Callback Stack*)
 
 ####run_meh()
 #####[Method Call Stack](img/method_invocation_callstacks.jpg)
@@ -57,7 +57,7 @@ Second is created in the setTimeout argument (bottom of *Callback Stack*). No bu
     0.2ms 100.0% Test.show             @ main.js:11 // Test.prototype.show = function(el, data){
     0.2ms 100.0% (anonymous function)  @ main.js:39 // setTimeout((function(item) {
 
-The wrapping closure in the method call is removed (main.js:25 is gone). But we still have the wrapping closure in the setTimeout argument (bottom of *Callback Stack*).
+The wrapping closure in the *Method Call Stack* is removed. But we still have the wrapping closure in the setTimeout argument (bottom of *Callback Stack*).
 
 ####run_cranked()
 #####[Method Call Stack](img/method_invocation_callstacks.jpg)
