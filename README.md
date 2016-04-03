@@ -35,7 +35,7 @@ But you are lazy, like me. So here is a breakdown with pictures and stuff.
 Here is the three method invocations which set timeouts. Screenshots of the data from Dev Tools panel are linked for visuals/reference.
 
 ####run_original()
-#####[Method Call Stack](img/method_invocation_callstacks.jpg)
+#####[Method Calls Stack](img/method_invocation_callstacks.jpg)
     (anonymous function)  @ main.js:25 // setTimeout((function(){ }).bind(this), offset * delay);
     Test.run_original     @ main.js:28 // ((function(offset){ }).bind(this))(i);
     (anonymous function)  @ main.js:66 // t.run_original( ... );
@@ -45,11 +45,11 @@ Here is the three method invocations which set timeouts. Screenshots of the data
     0.2ms 100.0% (anonymous function)  @ main.js:26 // this.show(el, queue[offset]);
 
 As you can see, two extra closures are created and held in memory.  
-First is in the method call wrapping the setTimeout function (top of *Method Call Stack*) which is created and called immediately (bound IIFE).  
+First is in the method call wrapping the setTimeout function (top of *Method Calls Stack*) which is created and called immediately (bound IIFE).  
 Second is created in the setTimeout argument (bottom of *Callback Stack*)
 
 ####run_meh()
-#####[Method Call Stack](img/method_invocation_callstacks.jpg)
+#####[Method Calls Stack](img/method_invocation_callstacks.jpg)
     Test.run_meh         @ main.js:39 // setTimeout((function(item) { ... }).bind(this, queue[i]), delay * i);
     (anonymous function) @ main.js:67 // t.run_meh( ... );
 #####[run_meh's Callback Stack](img/run_meh_callbackstack.jpg)
@@ -57,10 +57,10 @@ Second is created in the setTimeout argument (bottom of *Callback Stack*)
     0.2ms 100.0% Test.show             @ main.js:11 // Test.prototype.show = function(el, data){
     0.2ms 100.0% (anonymous function)  @ main.js:39 // setTimeout((function(item) {
 
-The wrapping closure in the *Method Call Stack* is removed. But we still have the wrapping closure in the setTimeout argument (bottom of *Callback Stack*).
+The wrapping closure in the *Method Calls Stack* is removed. But we still have the wrapping closure in the setTimeout argument (bottom of *Callback Stack*).
 
 ####run_cranked()
-#####[Method Call Stack](img/method_invocation_callstacks.jpg)
+#####[Method Calls Stack](img/method_invocation_callstacks.jpg)
     Test.run_cranked      @ main.js:52 // setTimeout((function(item) { ... }).bind(this, queue[i]), delay * i);
     (anonymous function)  @ main.js:68 // t.run_cranked( ... );
 #####[run_cranked's Callback Stack](img/run_cranked_callbackstack.jpg)
@@ -73,8 +73,8 @@ This is beautiful. There is no closure wrappers around anything. Just a single f
 The time taken to create and execute a bound function is fractions of a millisecond. There is no noticable difference on this scale, but large applications misusing closures can add up.  
 Closures must be saved in memory, so reducing usage cuts down on time and memory.
 
-#####Method Call Stack
-[Method Invocation Stacks](img/method_invocation_callstacks.jpg) shows performance hits for setting up the setTimeouts:
+#####Method Calls Stack
+[Method Calls Stack](img/method_invocation_callstacks.jpg) shows performance hits for setting up the setTimeouts:
 
 | Function | % Time Total |
 | --- | --- |
