@@ -84,7 +84,7 @@ Closures must be saved in memory, so reducing usage cuts down on time and memory
 | Function | % Time Total |
 | --- | --- |
 | original | 9.2% |
-| meh | 8.2% |
+| meh | 8.5% |
 | cranked | 2.6% |
 
 Granted these are against incredibly small quantities, *cranked* still manages a third less time without extra closures.
