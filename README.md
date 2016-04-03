@@ -28,6 +28,63 @@ So I began investigating. I ended up simplifying down to:
     for(i=0; i < queue.length; i++)
        setTimeout( this.show.bind(this, el, queue[i]), delay * i );
 
-Replaced play() with show() for my example. Main.js has the investigation diary (thought process) located after code.
+Main.js has the investigation diary (thought process) located after code.
 
-Also, a working demo: [JSFiddle](https://jsfiddle.net/ryunp/8nyq969t/)
+But you are lazy, like me. So here is a breakdown with pictures and stuff.
+
+### Breakdown
+Here is the initial call to all three methods
+
+![Method Invocation Callstacks](method_invocation_callstacks.jpg)
+
+The interesting part is the call stacks:
+
+####run_original()
+
+![run_meh callback stack](run_original_calllbackstack.jpg)
+
+#####Method call stack
+    (anonymous function)  @ main.js:25 // setTimeout((function(){ }).bind(this), offset * delay);
+    Test.run_original     @ main.js:28 // ((function(offset){ }).bind(this))(i);
+    (anonymous function)  @ main.js:66 // t.run_original( ... );
+#####Callback call stack
+    0.1ms 65.07% insertAdjacentHTML    @ main.js:14 // el.insertAdjacentHTML("beforeend", html);
+    0.2ms 100.0% Test.show             @ main.js:14 // el.insertAdjacentHTML("beforeend", html); **<?>**
+    0.2ms 100.0% (anonymous function)  @ main.js:26 // this.show(el, queue[offset]);
+As you can see, two extra closures are created and held in memory.
+
+First is in the method call wrapping the setTimeout function (top of method stack) which is created and called immediately (bound IIFE).
+
+Second is created in the setTimeout argument (bottom of callback stack). No bueno.
+
+**<?>** Not sure why this is line 14 instead of 11, like the others. ¯\_(ツ)_/¯
+
+####run_meh()
+
+![run_meh callback stack](run_meh_callbackstack.jpg)
+
+#####Method call stack
+    Test.run_meh         @ main.js:39 // setTimeout((function(item) { ... }).bind(this, queue[i]), delay * i);
+    (anonymous function) @ main.js:67 // t.run_meh( ... );
+#####Callback call stack
+    0.0ms 21.04% insertAdjacentHTML    @ main.js:14 // el.insertAdjacentHTML("beforeend", html);
+    0.2ms 100.0% Test.show             @ main.js:11 // Test.prototype.show = function(el, data){
+    0.2ms 100.0% (anonymous function)  @ main.js:39 // setTimeout((function(item) {
+The wrapping closure in the method call is removed (main.js:25 is gone). But we still have the wrapping closure in the setTimeout argument (bottom of callback stack).
+
+
+####run_cranked()
+
+![run_cranked callback stack](run_cranked_callbackstack.jpg)
+
+
+#####Method call stack
+    Test.run_cranked      @ main.js:52 // setTimeout((function(item) { ... }).bind(this, queue[i]), delay * i);
+    (anonymous function)  @ main.js:68 // t.run_cranked( ... );
+#####Callback call stack
+    0.1ms 33.00% insertAdjacentHTML  @ main.js:14 // el.insertAdjacentHTML("beforeend", html);
+    0.2ms 100.0% Test.show           @ main.js:11 // Test.prototype.show = function(el, data){
+This is beautiful. There is no closure wrappers around anything. Just a single object returned from bind() set as the callback in setTimeout. Context, and arguments are preserved inside the functor's scope, all packaged up, waiting to be called. Sexy. As. Fuck.
+
+####Working Demonstration
+Because, you know, science: [JSFiddle](https://jsfiddle.net/ryunp/8nyq969t/)
