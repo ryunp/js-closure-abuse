@@ -45,7 +45,7 @@ Method call stack refers to this image, individual setTimeout callback invocatio
 #####Callback call stack
 <pre>
 0.1ms 65.07% insertAdjacentHTML    @ main.js:14 // el.insertAdjacentHTML("beforeend", html);
-0.2ms 100.0% Test.show             @ main.js:14 // el.insertAdjacentHTML("beforeend", html); **?**
+0.2ms 100.0% Test.show             @ main.js:14 // el.insertAdjacentHTML("beforeend", html); <b>?</b>
 0.2ms 100.0% (anonymous function)  @ main.js:26 // this.show(el, queue[offset]);
 </pre>
 ![run_meh callback stack](img/run_original_calllbackstack.jpg)
