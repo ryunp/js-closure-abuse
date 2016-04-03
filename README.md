@@ -39,7 +39,7 @@ Here is the three method invocations which set timeouts. Screenshots of the data
     (anonymous function)  @ main.js:25 // setTimeout((function(){ }).bind(this), offset * delay);
     Test.run_original     @ main.js:28 // ((function(offset){ }).bind(this))(i);
     (anonymous function)  @ main.js:66 // t.run_original( ... );
-#####[Callback Stack](img/run_original_calllbackstack.jpg)
+#####[run_original's Callback Stack](img/run_original_calllbackstack.jpg)
     0.1ms 65.07% insertAdjacentHTML    @ main.js:14 // el.insertAdjacentHTML("beforeend", html);
     0.2ms 100.0% Test.show             @ main.js:14 // el.insertAdjacentHTML("beforeend", html);
     0.2ms 100.0% (anonymous function)  @ main.js:26 // this.show(el, queue[offset]);
@@ -52,7 +52,7 @@ Second is created in the setTimeout argument (bottom of *Callback Stack*). No bu
 #####[Method Call Stack](img/method_invocation_callstacks.jpg)
     Test.run_meh         @ main.js:39 // setTimeout((function(item) { ... }).bind(this, queue[i]), delay * i);
     (anonymous function) @ main.js:67 // t.run_meh( ... );
-#####[Callback Stack](img/run_meh_callbackstack.jpg)
+#####[run_meh's Callback Stack](img/run_meh_callbackstack.jpg)
     0.0ms 21.04% insertAdjacentHTML    @ main.js:14 // el.insertAdjacentHTML("beforeend", html);
     0.2ms 100.0% Test.show             @ main.js:11 // Test.prototype.show = function(el, data){
     0.2ms 100.0% (anonymous function)  @ main.js:39 // setTimeout((function(item) {
@@ -63,7 +63,7 @@ The wrapping closure in the method call is removed (main.js:25 is gone). But we 
 #####[Method Call Stack](img/method_invocation_callstacks.jpg)
     Test.run_cranked      @ main.js:52 // setTimeout((function(item) { ... }).bind(this, queue[i]), delay * i);
     (anonymous function)  @ main.js:68 // t.run_cranked( ... );
-#####[Callback Stack](img/run_cranked_callbackstack.jpg)
+#####[run_cranked's Callback Stack](img/run_cranked_callbackstack.jpg)
     0.1ms 33.00% insertAdjacentHTML  @ main.js:14 // el.insertAdjacentHTML("beforeend", html);
     0.2ms 100.0% Test.show           @ main.js:11 // Test.prototype.show = function(el, data){
 
