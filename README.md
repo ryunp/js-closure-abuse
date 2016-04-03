@@ -32,7 +32,10 @@ So I began investigating. I ended up simplifying down to:
 But you are lazy, like me. So here is a breakdown with pictures and stuff.
 
 ### Breakdown
-Here is the three method invocations which set timeouts. Screenshots of the data from Dev Tools panel are linked for visuals/reference.
+Screenshots of the data from Dev Tools panel are linked for visuals/reference.
+1. Method Calls Stack is the three method invocations.  
+2. Callback Stack is invocation of their respective callbacks.
+
 
 ####run_original()
 #####[Method Calls Stack](img/method_invocation_callstacks.jpg)
