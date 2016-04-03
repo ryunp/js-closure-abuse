@@ -33,7 +33,8 @@ But you are lazy, like me. So here is a breakdown with pictures and stuff.
 
 ### Breakdown
 Here is the three method invocations which set timeouts:
-![Method Invocation Callstacks](img/method_invocation_callstacks.jpg)  
+![Method Invocation Callstacks](img/method_invocation_callstacks.jpg)
+
 Method call stack refers to this image, individual setTimeout callback invocations are shown respectively under their headings.
 
 ####run_original()
@@ -43,6 +44,7 @@ Method call stack refers to this image, individual setTimeout callback invocatio
     (anonymous function)  @ main.js:66 // t.run_original( ... );
 #####Callback call stack
 ![run_meh callback stack](img/run_original_calllbackstack.jpg)
+
 <pre>
 0.1ms 65.07% insertAdjacentHTML    @ main.js:14 // el.insertAdjacentHTML("beforeend", html);
 0.2ms 100.0% Test.show             @ main.js:14 // el.insertAdjacentHTML("beforeend", html); **?**
@@ -59,6 +61,7 @@ Second is created in the setTimeout argument (bottom of callback stack). No buen
     (anonymous function) @ main.js:67 // t.run_meh( ... );
 #####Callback call stack
 ![run_meh callback stack](img/run_meh_callbackstack.jpg)
+
 <pre>
 0.0ms 21.04% insertAdjacentHTML    @ main.js:14 // el.insertAdjacentHTML("beforeend", html);
 0.2ms 100.0% Test.show             @ main.js:11 // Test.prototype.show = function(el, data){
@@ -73,6 +76,7 @@ The wrapping closure in the method call is removed (main.js:25 is gone). But we 
     (anonymous function)  @ main.js:68 // t.run_cranked( ... );
 #####Callback call stack
 ![run_cranked callback stack](img/run_cranked_callbackstack.jpg)
+
 <pre>
 0.1ms 33.00% insertAdjacentHTML  @ main.js:14 // el.insertAdjacentHTML("beforeend", html);
 0.2ms 100.0% Test.show           @ main.js:11 // Test.prototype.show = function(el, data){
