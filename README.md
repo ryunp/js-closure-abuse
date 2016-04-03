@@ -40,13 +40,13 @@ Screenshots of the data from Dev Tools panel are linked for visuals/reference.
 
 ####[run_original()](js/main.js#L19-L30)
 #####[Method Calls Stack](img/method_invocation_callstacks.jpg)
-    (anonymous function)  @ [main.js:25](js/main.js#L25) // setTimeout((function(){ this.show... }).bind(this), offset * delay);
-    Test.run_original     @ [main.js:28](js/main.js#L28) // ((function(offset){ setTimeout... }).bind(this))(i);
-    (anonymous function)  @ [main.js:66](js/main.js#L66) // t.run_original( ... );
+    (anonymous function)  @ main.js:25 // setTimeout((function(){ this.show... }).bind(this), offset * delay);
+    Test.run_original     @ main.js:28 // ((function(offset){ setTimeout... }).bind(this))(i);
+    (anonymous function)  @ main.js:66 // t.run_original( ... );
 #####[run_original's Callback Stack](img/run_original_calllbackstack.jpg)
-    0.1ms 65.07% insertAdjacentHTML    @ [main.js:14](js/main.js#L14) // el.insertAdjacentHTML("beforeend", html);
-    0.2ms 100.0% Test.show             @ [main.js:14](js/main.js#L14) // el.insertAdjacentHTML("beforeend", html);
-    0.2ms 100.0% (anonymous function)  @ [main.js:26](js/main.js#L26) // this.show(el, queue[offset]);
+    0.1ms 65.07% insertAdjacentHTML    @ main.js:14 // el.insertAdjacentHTML("beforeend", html);
+    0.2ms 100.0% Test.show             @ main.js:14 // el.insertAdjacentHTML("beforeend", html);
+    0.2ms 100.0% (anonymous function)  @ main.js:26 // this.show(el, queue[offset]);
 
 As you can see, two extra closures are created and held in memory.
 
@@ -55,22 +55,22 @@ As you can see, two extra closures are created and held in memory.
 
 ####[run_meh()](js/main.js#L34-L43)
 #####[Method Calls Stack](img/method_invocation_callstacks.jpg)
-    Test.run_meh         @ [main.js:39](js/main.js#L39) // setTimeout((function(item) { this.show... }).bind(this, queue[i]), delay * i);
-    (anonymous function) @ [main.js:67](js/main.js#L67) // t.run_meh( ... );
+    Test.run_meh         @ main.js:39 // setTimeout((function(item) { this.show... }).bind(this, queue[i]), delay * i);
+    (anonymous function) @ main.js:67 // t.run_meh( ... );
 #####[run_meh's Callback Stack](img/run_meh_callbackstack.jpg)
-    0.0ms 21.04% insertAdjacentHTML    @ [main.js:14](js/main.js#L14) // el.insertAdjacentHTML("beforeend", html);
-    0.2ms 100.0% Test.show             @ [main.js:11](js/main.js#L11) // Test.prototype.show = function(el, data){
-    0.2ms 100.0% (anonymous function)  @ [main.js:39](js/main.js#L39) // setTimeout((function(item) {
+    0.0ms 21.04% insertAdjacentHTML    @ main.js:14 // el.insertAdjacentHTML("beforeend", html);
+    0.2ms 100.0% Test.show             @ main.js:11 // Test.prototype.show = function(el, data){
+    0.2ms 100.0% (anonymous function)  @ main.js:39 // setTimeout((function(item) {
 
 The wrapping closure in the *Method Calls Stack* is removed. But we still have the wrapping closure in the setTimeout argument (bottom of *Callback Stack*).
 
 ####[run_cranked()](js/main.js#L47-L53)
 #####[Method Calls Stack](img/method_invocation_callstacks.jpg)
-    Test.run_cranked      @ [main.js:52](js/main.js#L52) // setTimeout((function(item) { ... }).bind(this, queue[i]), delay * i);
-    (anonymous function)  @ [main.js:68](js/main.js#L68) // t.run_cranked( ... );
+    Test.run_cranked      @ main.js:52 // setTimeout((function(item) { ... }).bind(this, queue[i]), delay * i);
+    (anonymous function)  @ main.js:68 // t.run_cranked( ... );
 #####[run_cranked's Callback Stack](img/run_cranked_callbackstack.jpg)
-    0.1ms 33.00% insertAdjacentHTML  @ [main.js:14](js/main.js#L14) // el.insertAdjacentHTML("beforeend", html);
-    0.2ms 100.0% Test.show           @ [main.js:11](js/main.js#L11) // Test.prototype.show = function(el, data){
+    0.1ms 33.00% insertAdjacentHTML  @ main.js:14 // el.insertAdjacentHTML("beforeend", html);
+    0.2ms 100.0% Test.show           @ main.js:11 // Test.prototype.show = function(el, data){
 
 This is beautiful. There is no closure wrappers around anything. Just a single functor returned from bind() set as the callback in setTimeout. Context, and arguments are preserved inside the functor's scope, all packaged up, waiting to be called. Sexy. As. F*#@.
 
