@@ -90,7 +90,7 @@ Closures must be saved in memory, so reducing usage cuts down on time and memory
 Granted these are against incredibly small quantities, *cranked* still manages a third less time without extra closures.
 
 #####Callback Stack
-The callback stacks are less interesting in relation to time, since functions are just being call and not created. Still good to consider the extra wasted cycles on the calls.
+The callback stacks are less interesting in relation to time, since functions are just being called and not created. Still good to consider the extra wasted cycles on the calls.
 
 ####Working Demonstration
 Because, you know, science: [JSFiddle](https://jsfiddle.net/ryunp/8nyq969t/)
