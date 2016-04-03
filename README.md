@@ -23,7 +23,7 @@ The code inside the for loop really tripped me up:
 Source: [Synth.js](https://github.com/garvank/synth-js)
 
 
-Looks like Lisp has been sleeping around with this code. So I began investigating. I ended up simplifying down to:
+Looks like Lisp has been sleeping around with this code. So began the investigating, ended up simplifying down to:
 
     for(i=0; i < queue.length; i++)
        setTimeout( this.show.bind(this, el, queue[i]), delay * i );
