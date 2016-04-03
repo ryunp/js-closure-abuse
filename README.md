@@ -45,8 +45,8 @@ Here is the three method invocations which set timeouts. Screenshots of the data
     0.2ms 100.0% (anonymous function)  @ main.js:26 // this.show(el, queue[offset]);
 
 As you can see, two extra closures are created and held in memory.  
-First is in the method call wrapping the setTimeout function (top of method stack) which is created and called immediately (bound IIFE).  
-Second is created in the setTimeout argument (bottom of callback stack). No bueno.  
+First is in the method call wrapping the setTimeout function (top of *Method Call Stack*) which is created and called immediately (bound IIFE).  
+Second is created in the setTimeout argument (bottom of *Callback Stack*). No bueno.  
 
 ####run_meh()
 #####[Method Call Stack](img/method_invocation_callstacks.jpg)
@@ -57,7 +57,7 @@ Second is created in the setTimeout argument (bottom of callback stack). No buen
     0.2ms 100.0% Test.show             @ main.js:11 // Test.prototype.show = function(el, data){
     0.2ms 100.0% (anonymous function)  @ main.js:39 // setTimeout((function(item) {
 
-The wrapping closure in the method call is removed (main.js:25 is gone). But we still have the wrapping closure in the setTimeout argument (bottom of callback stack).
+The wrapping closure in the method call is removed (main.js:25 is gone). But we still have the wrapping closure in the setTimeout argument (bottom of *Callback Stack*).
 
 ####run_cranked()
 #####[Method Call Stack](img/method_invocation_callstacks.jpg)
@@ -74,19 +74,20 @@ The time taken to create and execute a bound function is fractions of a millisec
 Closures must be saved in memory, so reducing usage cuts down on time and memory.
 
 #####Method Call Stack
-While approximate, the [Method Invocation Stacks](img/method_invocation_callstacks.jpg) shows performance hits for setting up the setTimeouts:
-function | method
----- | ----
-original | 9.2%
-meh | 8.2%
-cranked | 2.6%
+[Method Invocation Stacks](img/method_invocation_callstacks.jpg) shows performance hits for setting up the setTimeouts:
 
-Granted these are against incredibly small quantities, *cranked* manages a third less time without extra closures.
+| Function | % Time Total |
+| --- | --- |
+| original | 9.2% |
+| meh | 8.2% |
+| cranked | 2.6% |
+
+Granted these are against incredibly small quantities, *cranked* still manages a third less time without extra closures.
 
 #####Callback Stack
-The callback stacks are less interesting in relation to time, since functions are just being call and not created.
+The callback stacks are less interesting in relation to time, since functions are just being call and not created. Still good to consider the extra wasted cycles on the calls.
 
 ####Working Demonstration
 Because, you know, science: [JSFiddle](https://jsfiddle.net/ryunp/8nyq969t/)
 
-####**Save time, and memory! Stop closures abuse!**
+####**Save time and memory! Stop closures abuse!**
