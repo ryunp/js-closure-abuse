@@ -33,7 +33,7 @@ But you are lazy, like me. So here is a breakdown with pictures and stuff.
 
 ### Breakdown
 Here is the three method invocations which set timeouts:
-![Method Invocation Callstacks](img/method_invocation_callstacks.jpg)
+![Method Invocation Callstacks](img/method_invocation_callstacks.jpg)  
 Method call stack refers to this image, individual setTimeout callback invocations are shown respectively under their headings.
 
 ####run_original()
@@ -59,9 +59,11 @@ Second is created in the setTimeout argument (bottom of callback stack). No buen
     (anonymous function) @ main.js:67 // t.run_meh( ... );
 #####Callback call stack
 ![run_meh callback stack](img/run_meh_callbackstack.jpg)
-    0.0ms 21.04% insertAdjacentHTML    @ main.js:14 // el.insertAdjacentHTML("beforeend", html);
-    0.2ms 100.0% Test.show             @ main.js:11 // Test.prototype.show = function(el, data){
-    0.2ms 100.0% (anonymous function)  @ main.js:39 // setTimeout((function(item) {
+<pre>
+0.0ms 21.04% insertAdjacentHTML    @ main.js:14 // el.insertAdjacentHTML("beforeend", html);
+0.2ms 100.0% Test.show             @ main.js:11 // Test.prototype.show = function(el, data){
+0.2ms 100.0% (anonymous function)  @ main.js:39 // setTimeout((function(item) {
+</pre>
 The wrapping closure in the method call is removed (main.js:25 is gone). But we still have the wrapping closure in the setTimeout argument (bottom of callback stack).
 
 
@@ -71,8 +73,10 @@ The wrapping closure in the method call is removed (main.js:25 is gone). But we 
     (anonymous function)  @ main.js:68 // t.run_cranked( ... );
 #####Callback call stack
 ![run_cranked callback stack](img/run_cranked_callbackstack.jpg)
-    0.1ms 33.00% insertAdjacentHTML  @ main.js:14 // el.insertAdjacentHTML("beforeend", html);
-    0.2ms 100.0% Test.show           @ main.js:11 // Test.prototype.show = function(el, data){
+<pre>
+0.1ms 33.00% insertAdjacentHTML  @ main.js:14 // el.insertAdjacentHTML("beforeend", html);
+0.2ms 100.0% Test.show           @ main.js:11 // Test.prototype.show = function(el, data){
+</pre>
 This is beautiful. There is no closure wrappers around anything. Just a single object returned from bind() set as the callback in setTimeout. Context, and arguments are preserved inside the functor's scope, all packaged up, waiting to be called. Sexy. As. Fuck.
 
 ####Working Demonstration
