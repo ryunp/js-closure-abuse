@@ -40,8 +40,8 @@ Screenshots of the data from Dev Tools panel are linked for visuals/reference.
 
 ####run_original()
 #####[Method Calls Stack](img/method_invocation_callstacks.jpg)
-    (anonymous function)  @ main.js:25 // setTimeout((function(){ }).bind(this), offset * delay);
-    Test.run_original     @ main.js:28 // ((function(offset){ }).bind(this))(i);
+    (anonymous function)  @ main.js:25 // setTimeout((function(){ this.show... }).bind(this), offset * delay);
+    Test.run_original     @ main.js:28 // ((function(offset){ setTimeout... }).bind(this))(i);
     (anonymous function)  @ main.js:66 // t.run_original( ... );
 #####[run_original's Callback Stack](img/run_original_calllbackstack.jpg)
     0.1ms 65.07% insertAdjacentHTML    @ main.js:14 // el.insertAdjacentHTML("beforeend", html);
@@ -51,11 +51,11 @@ Screenshots of the data from Dev Tools panel are linked for visuals/reference.
 As you can see, two extra closures are created and held in memory.
 
 1. Wrapping the setTimeout function (top of *Method Calls Stack*) which is created and called immediately (bound IIFE).
-2. Created in the setTimeout argument (bottom of *Callback Stack*) (bound)
+2. Created in the setTimeout argument (bottom of *Callback Stack*) (bound functor)
 
 ####run_meh()
 #####[Method Calls Stack](img/method_invocation_callstacks.jpg)
-    Test.run_meh         @ main.js:39 // setTimeout((function(item) { ... }).bind(this, queue[i]), delay * i);
+    Test.run_meh         @ main.js:39 // setTimeout((function(item) { this.show... }).bind(this, queue[i]), delay * i);
     (anonymous function) @ main.js:67 // t.run_meh( ... );
 #####[run_meh's Callback Stack](img/run_meh_callbackstack.jpg)
     0.0ms 21.04% insertAdjacentHTML    @ main.js:14 // el.insertAdjacentHTML("beforeend", html);
