@@ -51,7 +51,7 @@ Screenshots of the data from Dev Tools panel are linked for visuals/reference.
 As you can see, two extra closures are created and held in memory.
 
 1. Wrapping the setTimeout function (top of *Method Calls Stack*) which is created and called immediately (bound IIFE).
-2. Created in the setTimeout argument (bottom of *Callback Stack*) (bound IIFE)
+2. Created in the setTimeout argument (bottom of *Callback Stack*) (bound)
 
 ####run_meh()
 #####[Method Calls Stack](img/method_invocation_callstacks.jpg)
