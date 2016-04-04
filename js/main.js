@@ -1,5 +1,6 @@
 /* Ryan Paul - 03/31/16
  * Scope chains, context, closures, and binding
+ * https://github.com/ryunp/js-closure-abuse
  */
 
 
