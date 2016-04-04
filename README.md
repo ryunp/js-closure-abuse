@@ -72,7 +72,7 @@ The wrapping closure in the *Method Calls Stack* is removed. But we still have t
     0.1ms 33.00% insertAdjacentHTML  @ main.js:14 // el.insertAdjacentHTML("beforeend", html);
     0.2ms 100.0% Test.show           @ main.js:11 // Test.prototype.show = function(el, data){
 
-This is beautiful. There is no closure wrappers around anything. Just a single functor returned from bind() set as the callback in setTimeout. Context, and arguments are preserved inside the functor's scope, all packaged up, waiting to be called. Sexy. As. F*#@.
+This is beautiful. There is no closure wrappers around anything. Just a single functor returned from bind() set as the callback in setTimeout. Context, and arguments are preserved inside the functor's scope, all packaged up, waiting to be called. Sexy. As. F%#@.
 
 ####Conclusion
 The time taken to create and execute a bound function is fractions of a millisecond. There is no noticable difference on this scale, but large applications misusing closures can add up.  
@@ -93,6 +93,7 @@ Granted these are against incredibly small quantities, *cranked* still manages a
 The callback stacks are less interesting in relation to time, since functions are just being called and not created. Still good to consider the extra wasted cycles on the calls.
 
 ####Working Demonstration
-Because, you know, science: [JSFiddle](https://jsfiddle.net/ryunp/8nyq969t/)
+Because, you know, science: [JSFiddle](https://jsfiddle.net/ryunp/8nyq969t/) or [Github](http://ryunp.github.io/js-closure-abuse/)
+
 
 ####**Save time and memory! Stop closures abuse!**
