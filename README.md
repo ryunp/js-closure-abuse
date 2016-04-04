@@ -50,8 +50,8 @@ Screenshots of the data from Dev Tools panel are linked for visuals/reference.
 
 As you can see, two extra closures are created and held in memory.
 
-1. Wrapping the setTimeout function (top of *Method Calls Stack*) which is created and called immediately (bound IIFE).
-2. Wrapping the show function inside setTimeout argument's (bottom of *Callback Stack*) (bound functor)
+1. Wrapping the *setTimeout* function (top of *Method Calls Stack*) which is created and called immediately (bound IIFE)
+2. Wrapping the *show* function in the first argument of *setTimeout* (bottom of *Callback Stack*) (bound functor)
 
 ####[run_meh()](js/main.js#L34-L43)
 #####[Method Calls Stack](img/method_invocation_callstacks.jpg)
