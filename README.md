@@ -76,7 +76,7 @@ From the [docs](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Referenc
 
 We can see the closure formed around setTimeout.
 
-##### Callback Invocation Call Stack ([Dev Tools Capture](img/run_original_calllbackstack.jpg))
+##### Callback Invocation Call Stack
 
 ![run_original callback call stack](img/run_original_callback.jpg)
 
@@ -111,7 +111,7 @@ This ends up still working just fine without any patching, since the index value
 
 Indeed the function wrapping setTimeout has been removed. Beautiful; one less jump for that poor CPU.
 
-##### Callback Invocation Call Stack ([Dev Tools Capture](img/run_meh_callbackstack.jpg))
+##### Callback Invocation Call Stack
 
 ![run_meh callback call stack](img/run_meh_callback.jpg)
 
@@ -143,7 +143,7 @@ That looks more declarative and easier to read. Mmmm mmmm mmm, sexyness!
 
 Nothing changed here, naturally.
 
-##### Callback Invocation Call Stack [Dev Tools Capture](img/run_cranked_callbackstack.jpg)
+##### Callback Invocation Call Stack
 
 ![run_cranked callback call stack](img/run_cranked_callback.jpg)
 
