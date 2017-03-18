@@ -40,7 +40,7 @@ The breakdown below is split into multiple section. Each section has three sub-s
 
 ---
 
-### Original Code ([run_original()](js/main.js#L19-L30))
+### Original Code ([run_original()](js/main.js#L37-L48))
 
 Let's break down the statements.
 
@@ -86,7 +86,7 @@ The extra closure around setTimeout seems completely unnecessary. We only need t
 
 ---
 
-### SetTimeout Closure Removal ([run_meh()](js/main.js#L34-L43))
+### SetTimeout Closure Removal ([run_meh()](js/main.js#L52-L61))
 
 After stripping the wrapping closure, we get:
 
@@ -121,7 +121,7 @@ Let's reduce that explicit function wrapper...
 
 ---
 
-### Callback Closure Refactor ([run_cranked()](js/main.js#L47-L53))
+### Callback Closure Refactor ([run_cranked()](js/main.js#L65-L70))
 
 Since every function's prototype is linked back to Object, we can utilize bind inherently:
 
