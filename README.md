@@ -1,183 +1,188 @@
 # js-closure-abuse
 ## An exploration into closures, execution scope, and Object.bind()
 
-Dealing with object methods and timeouts can lead to major frustration when not properly understood. This [chunk of code](https://github.com/garvank/synth-js) looks incredibly complex and seemingly far beyond comprehension for us mere pleb coding mortals.
+This [chunk of code](https://github.com/garvank/synth-js) looks incredibly complex and begs to be dissected.
 
-    Synth.prototype.sequence = function(queue, bpm, loops){
+```
+Synth.prototype.sequence = function(queue, bpm, loops){
 
-      // Get BPM delay in milliseconds
-      var calculated_bpm = this.calculateBpm(bpm);
+  // Get BPM delay in milliseconds
+  var calculated_bpm = this.calculateBpm(bpm);
 
-      // Play each sound, then wait for the offset
-      for(i=0; i < queue.length; i++){
-        ((function(offset){
-          setTimeout((function(){
-            this.play(queue[offset]);
-          }).bind(this), offset * calculated_bpm)
-        }).bind(this))(i);
-      }
-    };
+  // Play each sound, then wait for the offset
+  for(i=0; i < queue.length; i++){
+    ((function(offset){
+      setTimeout((function(){
+        this.play(queue[offset]);
+      }).bind(this), offset * calculated_bpm)
+    }).bind(this))(i);
+  }
+};
+```
 
-And so the delicous challenge is accepted. Here is what I came up with:
+If you are just looking for the end result, here is what became of it:
 
-    for(i=0; i < queue.length; i++)
-       setTimeout(this.show.bind(this, el, queue[i]), delay * i);
+```
+for(i=0; i < queue.length; i++)
+   setTimeout(this.show.bind(this, el, queue[i]), delay * i);
+```
 
-The desired behavoir is a sequence of delayed callbacks using another method from the object. That does not require multiple nested closures to accomplish, as you can see.
+If you are curious how this came to be, keep reading!
 
 ---
 
 **Technical Review**
 
-The breakdown below is split into multiple section. Each section has three sub-sections, a title and intro, setTimeout call stack review, and callback call stack review.
+The breakdown below is split into multiple section. Each section has three sub-sections
+- title / intro
+- setTimeout call stack review
+- callback call stack review.
 
-*Note: The stack log builds upwards, bottom line being first evaluated.*
+---
 
 ### Original Code ([run_original()](js/main.js#L19-L30))
 
-So let's take a look at the events that occur with the original code.
+Let's break down the statements.
 
-    Test.prototype.run_original = function(el, queue, ms){
-    
-      var delay = ms;    
-    
-      for (i=0; i < queue.length; i++) {
-        ((function(offset){
-          setTimeout((function(){
-            this.show(el, queue[offset]);
-          }).bind(this), offset * delay);
-        }).bind(this))(i);
-      }
-    };
+```
+Test.prototype.run_original = function(el, queue, ms){
+
+  var delay = ms;    
+
+  for (i=0; i < queue.length; i++) {
+    ((function(offset){
+      setTimeout((function(){
+        this.show(el, queue[offset]);
+      }).bind(this), offset * delay);
+    }).bind(this))(i);
+  }
+};
+```
+
+The mentality here is:
+- Create closure around setTimeout with current index saved inside
+- Create closure #2 and pass into setTimeout as callback, use saved index in delay value
+  - Execute payload referencing the saved index value of the parent closure
+
+Saving the index value into another variable inside the for loop is redundant. Same with binding *this* context multiple times. The mistake is to split binding arguments and *this* context descretely. The purpose of *bind()* is to preserve *this* context and arguments in one swoop.
+
+From the [docs](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind):
+
+> The bind() method creates a new function that, when called, has its this keyword set to the provided value, with a given sequence of arguments preceding any provided when the new function is called.
 
 ##### setTimeout Invocation Call Stack
 
-    (anonymous function)  @ main.js:25 // setTimeout((function(){ this.show... }).bind(this), offset * delay);
-    Test.run_original     @ main.js:28 // ((function(offset){ setTimeout... }).bind(this))(i);
-    (anonymous function)  @ main.js:66 // t.run_original( ... );
+![run_original setTimeout call stack](img/run_original_setTimeout.jpg)
 
-*line 66* is invoked, which kicks off the for loop.  
-*line 28* invokes the IIFE closure that contains the *setTimeout*.  
-*line 25* runs inside the IIFE's context (anon func) and creates another functor for setTimeout.
-
-Two user space closures are created for setTimeout. One is to save the context around setTimeout, and another saving context being passed to setTimeout. Seems a bit redundant.
+We can see the closure formed around setTimeout.
 
 ##### Callback Invocation Call Stack ([Dev Tools Capture](img/run_original_calllbackstack.jpg))
 
-When the callback given to setTimeout is executed:
+![run_original callback call stack](img/run_original_callback.jpg)
 
-    0.1ms 65.07% insertAdjacentHTML    @ main.js:14 // el.insertAdjacentHTML("beforeend", html);
-    0.2ms 100.0% Test.show             @ main.js:14 // el.insertAdjacentHTML("beforeend", html);
-    0.2ms 100.0% (anonymous function)  @ main.js:26 // this.show(el, queue[offset]);
+Again we can see the closure formed around the payload (Test.play) that was passed as the setTimeout argument.
 
-*line 26* functor passed to setTimeout is executed
-*line 14* Test.show() payload is executed
-
-We can see the wrapping function for *this.show()* in action. There is a lot of redundancy here, let's try reducing these closures...
+The extra closure around setTimeout seems completely unnecessary. We only need to bind context and arguments once. Let's remove the outer closure...
 
 ---
 
-### Outer Closure Removal ([run_meh()](js/main.js#L34-L43))
+### SetTimeout Closure Removal ([run_meh()](js/main.js#L34-L43))
 
-We can first try to strip the closure wrapping setTimeout.
+After stripping the wrapping closure, we get:
 
-    Test.prototype.run_meh = function(el, queue, ms) {
-    
-      var delay = ms;
-    
-      for (i=0; i < queue.length; i++) {
-        setTimeout((function(item) {
-          this.show(el, item);
-        }).bind(this, queue[i]), delay * i);
-      }
-    };
+```
+Test.prototype.run_meh = function(el, queue, ms) {
 
-This ends up still working just fine, actually. No more alterations are needed!
+  var delay = ms;
+
+  for (i=0; i < queue.length; i++) {
+    setTimeout((function(item) {
+      this.show(el, item);
+    }).bind(this, queue[i]), delay * i);
+  }
+};
+```
+
+This ends up still working just fine without any patching, since the index value and context will not change inside the for loop's execution scope. Sweet!
 
 ##### setTimeout Invocation Call Stack
 
-    Test.run_meh         @ main.js:39 // setTimeout((function(item) { this.show... }).bind(this, queue[i]), delay * i);
-    (anonymous function) @ main.js:67 // t.run_meh( ... );
+![run_meh setTimeout call stack](img/run_meh_setTimeout.jpg)
 
-*line 67* is invoked, which kicks off the for loop.  
-*line 39* Creates a functor for setTimeout.
-
-Indeed it has been removed from the instructions. So far so good.
+Indeed the function wrapping setTimeout has been removed. Beautiful; one less jump for that poor CPU.
 
 ##### Callback Invocation Call Stack ([Dev Tools Capture](img/run_meh_callbackstack.jpg))
 
-    0.0ms 21.04% insertAdjacentHTML    @ main.js:14 // el.insertAdjacentHTML("beforeend", html);
-    0.2ms 100.0% Test.show             @ main.js:11 // Test.prototype.show = function(el, data){
-    0.2ms 100.0% (anonymous function)  @ main.js:39 // setTimeout((function(item) {
+![run_meh callback call stack](img/run_meh_callback.jpg)
 
-*line 39* functor passed to setTimeout is executed
-*line 11* Test.show() payload is executed
+We still need to bind context and arguements for the callback. As *bind()*'s job is to create a function, we don't need to manually create it ourselves.
 
-We still have the wrapping closure in the setTimeout argument. Let's see what we can do to this extra closure...
+Let's reduce that explicit function wrapper...
 
 ---
 
-### Inner Closure Refactor ([run_cranked()](js/main.js#L47-L53))
+### Callback Closure Refactor ([run_cranked()](js/main.js#L47-L53))
 
-Wrapping a function with another contextually bound function is literally what Object.bind() is meant for. So let's refactor that wrapper into a call to bind().
+Since every function's prototype is linked back to Object, we can utilize bind inherently:
 
-    Test.prototype.run_cranked = function(el, queue, ms) {
-    
-      var delay = ms;
-    
-      for (i=0; i < queue.length; i++)
-        setTimeout( this.show.bind(this, el, queue[i]), delay * i );
-    };
+```
+Test.prototype.run_cranked = function(el, queue, ms) {
 
-I want to think bind() is internally more efficient than an explicit function wrapper. But I'm not entirely sure, although it does look more declarative and easier to read.
+  var delay = ms;
+
+  for (i=0; i < queue.length; i++)
+    setTimeout( this.show.bind(this, el, queue[i]), delay * i );
+};
+```
+
+That looks more declarative and easier to read. Mmmm mmmm mmm, sexyness! 
 
 ##### setTimeout Invocation Call Stack
 
-    Test.run_cranked      @ main.js:52 // setTimeout((function(item) { ... }).bind(this, queue[i]), delay * i);
-    (anonymous function)  @ main.js:68 // t.run_cranked( ... );
+![run_cranked setTimeout call stack](img/run_cranked_setTimeout.jpg)
 
-*line 68* is invoked, which kicks off the for loop.  
-*line 52* Creates a functor for setTimeout.
-
-Same situation from before. No outer wrapping closure context seen. Moving on...
+Nothing changed here, naturally.
 
 ##### Callback Invocation Call Stack [Dev Tools Capture](img/run_cranked_callbackstack.jpg)
 
-    0.1ms 33.00% insertAdjacentHTML  @ main.js:14 // el.insertAdjacentHTML("beforeend", html);
-    0.2ms 100.0% Test.show           @ main.js:11 // Test.prototype.show = function(el, data){
+![run_cranked callback call stack](img/run_cranked_callback.jpg)
 
-*line 11* Test.show() payload is executed
-
-Perfect! The anonymous function context is now gone! Just a call to show() with properly binded *this* context. Mmmm. Delish.
+The anonymous function is gone, perfect! Bind did it's job to preserve the object reference and argument values! Yay!
 
 ---
 
 ### Conclusion
 
-The time taken to create and execute a bound function is fractions of a millisecond. There is no noticable difference on this scale, but large applications may see different results.
+Be careful creating extra layers of abstraction; make sure execution context is understood! Be as declarative as possible, this is a Fist Class Function language after all!
 
-Be careful creating extra layers of abstraction; *time is money, friend*!
+As a final comparison:
 
-##### setTimeout Invocation Call Stack
+```
+for(i=0; i < queue.length; i++){
+  ((function(offset){
+    setTimeout((function(){
+      this.play(queue[offset]);
+    }).bind(this), offset * calculated_bpm)
+  }).bind(this))(i);
+}
+```
+```
+for (i=0; i < queue.length; i++)
+  setTimeout( this.show.bind(this, el, queue[i]), delay * i );
+```
 
-[setTimeout Call Stack](img/method_invocation_call stacks.jpg) shows performance hits for setting up the setTimeouts:
+Yes.
 
-| Function | % Time Total |
-| --- | --- |
-| original | 9.2% |
-| meh | 8.5% |
-| cranked | 2.6% |
+### Performance
 
-Granted these are against incredibly small quantities, *cranked* still manages a third less time without extra closures.
+the extra closure does show a small time penalty upon execution. Although tiny, these extra layers at large scale could add up.
 
-##### Callback Invocation Call Stack
+![combined setTimeout call stacks](img/all_setTimeout.jpg)
 
-The callback stacks are less interesting in relation to time, since functions are just being called and not created. Still good to consider the extra wasted CPU time.
+### Demo
 
-#### Working Demonstration
+Because, you know, science and stuff: [JSFiddle](https://jsfiddle.net/ryunp/8nyq969t/) or [Github](http://ryunp.github.io/js-closure-abuse/)
 
-Because, you know, science: [JSFiddle](https://jsfiddle.net/ryunp/8nyq969t/) or [Github](http://ryunp.github.io/js-closure-abuse/)
+### #FriendsDontLetFriendsDoubleWrap
 
-#### #FriendsDontLetFriendsThatEqualsThis
-
-This is long and riddled with mistakes, no doubt. Let me know if you spot one, many, or *rm -rf*.
+Any mistakes or flaws? Let me know!
