@@ -33,7 +33,7 @@ If you are curious how this came to be, keep reading!
 
 **Technical Review**
 
-The breakdown below is split into multiple section. Each section has three sub-sections
+The breakdown below is split into multiple sections. Each section has three sub-sections
 - title / intro
 - setTimeout call stack review
 - callback call stack review.
@@ -64,7 +64,7 @@ The mentality here is:
 - Create closure #2 and pass into setTimeout as callback, use saved index in delay value
   - Execute payload referencing the saved index value of the parent closure
 
-Saving the index value into another variable inside the for loop is redundant. Same with binding *this* context multiple times. The mistake is to split binding arguments and *this* context descretely. The purpose of *bind()* is to preserve *this* context and arguments in one swoop.
+Saving the index value into another variable inside the for loop is redundant. Same with binding *this* context multiple times. The mistake is to split binding arguments and *this* context discretely. The purpose of *bind()* is to preserve *this* context and arguments in one swoop.
 
 From the [docs](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind):
 
@@ -74,21 +74,21 @@ From the [docs](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Referenc
 
 ![run_original setTimeout call stack](img/run_original_setTimeout.jpg)
 
-We can see the closure formed around setTimeout.
+We can see the function formed around setTimeout.
 
 ##### Callback Invocation Call Stack
 
 ![run_original callback call stack](img/run_original_callback.jpg)
 
-Again we can see the closure formed around the payload (Test.play) that was passed as the setTimeout argument.
+Again we can see the function formed around the payload (Test.play) that was passed as the setTimeout argument.
 
-The extra closure around setTimeout seems completely unnecessary. We only need to bind context and arguments once. Let's remove the outer closure...
+The extra functino around setTimeout seems completely unnecessary. We only need to bind context and arguments once. Let's remove the outer function...
 
 ---
 
 ### SetTimeout Closure Removal ([run_meh()](js/main.js#L52-L61))
 
-After stripping the wrapping closure, we get:
+After stripping the wrapping function, we get:
 
 ```
 Test.prototype.run_meh = function(el, queue, ms) {
@@ -153,7 +153,7 @@ The anonymous function is gone, perfect! Bind did it's job to preserve the objec
 
 ### Conclusion
 
-Be careful creating extra layers of abstraction; make sure execution context is understood! Be as declarative as possible, this is a Fist Class Function language after all!
+Be careful creating extra layers of abstraction; make sure execution context is understood! Be as declarative as possible, this is a First Class Function language after all!
 
 As a final comparison:
 
@@ -175,7 +175,7 @@ Yes.
 
 ### Performance
 
-the extra closure does show a small time penalty upon execution. Although tiny, these extra layers at large scale could add up.
+Extra closures take cycles to deal with as shown in the image below. May not seem like much, but at large scale these can consume much needed resources.
 
 ![combined setTimeout call stacks](img/all_setTimeout.jpg)
 
